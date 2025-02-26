@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Казино</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .game-section { margin: 20px 0; padding: 20px; border: 1px solid #ccc; }
+        .status { font-size: 1.2em; margin-bottom: 20px; }
+        input { margin: 5px; padding: 5px; }
+        button { padding: 10px 20px; background: #4CAF50; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Онлайн Казино</h1>
+    
+    <div class="status">
+        Очки: <span id="och">20</span> 
+        Деньги: $<span id="mon">100</span>
+    </div>
+
+    <div class="game-section" id="kosti">
+        <h2>Кости</h2>
+        Число (1-6): <input type="number" id="kostiNumber" min="1" max="6">
+        Ставка: <input type="number" id="kostiBet">
+        <button onclick="play(1)">Играть</button>
+    </div>
+
+    <div class="game-section" id="ruletka">
+        <h2>Рулетка</h2>
+        Число (1-50): <input type="number" id="ruletkaNumber" min="1" max="50">
+        Цвет: 
+        <select id="ruletkaColor">
+            <option value="1">Красный</option>
+            <option value="2">Чёрный</option>
+        </select>
+        Ставка: <input type="number" id="ruletkaBet">
+        <button onclick="play(2)">Играть</button>
+    </div>
+
+    <div id="result"></div>
+
+    <script>
+        async function updateState() {
+            const response = await fetch('/state');
+            const state = await response.json();
+            document.getElementById('och').textContent = state.och;
+            document.getElementById('mon').textContent = state.mon;
+            document.getElementById('result').textContent = state.result;
+        }
+
+        async function play(gameType) {
+            const request = {
+                gameType: gameType,
+                number: gameType === 1 ? 
+                    parseInt(document.getElementById('kostiNumber').value) :
+                    parseInt(document.getElementById('ruletkaNumber').value),
+                color: gameType === 2 ? 
+                    parseInt(document.getElementById('ruletkaColor').value) : 0,
+                bet: parseInt(gameType === 1 ? 
+                    document.getElementById('kostiBet').value :
+                    document.getElementById('ruletkaBet').value)
+            };
+
+            const response = await fetch('/play', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(request)
+            });
+
+            await updateState();
+        }
+
+        // Обновляем состояние при загрузке
+        updateState();
+    </script>
+</body>
+</html>
