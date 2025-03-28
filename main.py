@@ -7,7 +7,7 @@ def serch_in_text(text):
 
 def main():
     text = "wdl,aw,da[,d,[da,wd,a]]"
-    serch_in_text(text)
-    print(text)
+    x = serch_in_text(text)
+    print(x)
 
 main()
