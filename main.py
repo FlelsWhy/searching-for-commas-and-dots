@@ -9,5 +9,6 @@ def main():
     text = "wdl,aw,da[,d,[da,wd,a]]"
     x = serch_in_text(text)
     print(x)
+    print(__builtins__)
 
 main()
